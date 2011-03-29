@@ -1,7 +1,7 @@
 var INFO =
 <plugin
   name="webSearch"
-  version="0.0.1"
+  version="0.0.2"
   href="http://github.com/sugilog"
   summary="vimperator plugin for user customisable web search commands"
   xmlns="http://vimperator.org/namespaces/liberator"
@@ -13,7 +13,7 @@ var INFO =
     <tags>webSearchTemplates</tags>
     <spec>webSearchTemplates</spec>
     <description>
-      <p>user customisable template</p>
+      <p>user customisable template (it will concat with template in plugin file and)</p>
       <code><![CDATA[
 javascript <<EOM
 liberator.globalVariables.webSearchTemplates = [
@@ -29,14 +29,19 @@ EOM
 // ref: copy.js
 
 liberator.plugins.webSearch = (function(){
-  var templates = [];
-  liberator.globalVariables.webSearchTemplates = [
+  if (typeof liberator.globalVariables.webSearchTemplates == 'undefined') {
+    liberator.globalVariables.webSearchTemplates = [];
+  }
+
+  var templates = [
     { names: ['alc'], description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/' }
   ];
 
-  templates = liberator.globalVariables.webSearchTemplates.map(function(t){
+  templates = templates.concat(
+    liberator.globalVariables.webSearchTemplates.map(function(t){
       return { names: t.names, description: t.description, url: t.url }
-  });
+    })
+  );
 
   templates.forEach(function(template){
     commands.addUserCommand(
