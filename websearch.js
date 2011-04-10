@@ -1,7 +1,7 @@
 var INFO =
 <plugin
   name="webSearch"
-  version="0.1.0"
+  version="0.1.1"
   href="http://github.com/sugilog"
   summary="vimperator plugin for user customisable web search commands"
   xmlns="http://vimperator.org/namespaces/liberator"
