@@ -70,7 +70,7 @@ liberator.plugins.webSearch = (function(){
         open(template.url, arg, tabOpenStatus(arg.bang, template.tabOpen));
       },
       {
-        argCount : 1,
+        argCount : '+',
         bang     : true
       },
       true
@@ -79,7 +79,7 @@ liberator.plugins.webSearch = (function(){
 
   var open = function(templateUrl, keyword, tabOpen){
     liberator.open(
-      templateUrl.replace(/%KEYWORD%/, keyword),
+      templateUrl.replace(/%KEYWORD%/, keyword.join('+')),
       ((tabOpen) ? liberator.NEW_TAB : liberator.CURRENT_TAB)
     );
   }
