@@ -1,7 +1,7 @@
 var INFO =
 <plugin
   name="webSearch"
-  version="0.1.1"
+  version="0.2.0"
   href="http://github.com/sugilog"
   summary="vimperator plugin for user customisable web search commands"
   xmlns="http://vimperator.org/namespaces/liberator"
@@ -26,19 +26,25 @@ var INFO =
       <code><![CDATA[
 javascript <<EOM
 liberator.globalVariables.webSearchTemplates = [
-  { names: ['alc'], description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/', tabOpen: true }
+  { names: ['alc'], description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/', tabOpen: true, urlWithoutKeyword: 'http://www.alc.co.jp' }
 ];
 EOM
       ]]></code>
+      <p>urlWithoutKeyword is set quickmarks with initial of name which is names of first element.</p>
+      <p>ex) {names: ['alc', 'webalc'], urlWithoutKeyword: 'http://www.alc.co.jp'} => 'qmark a http://www.alc.co.jp'</p>
+      <p>if urlWithoutKeyword is not given, urlWithoutKeyword is generated with host of url</p>
+      <p>ex) {names: ['alc', 'webalc'], url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/'} => {urlWithoutKeyword: 'http://eow.alc.co.jp/'}</p>
       <dl>
         <dt>names</dt>
-        <dd>command names. (String Array, required)</dd>
+        <dd>command names. (String Array OR String, required)</dd>
         <dt>description</dt>
         <dd>command description. (String, optional)</dd>
         <dt>url</dt>
         <dd>url for search on web searvice. must have %KEYWORD% to replace keyword. (String, required)</dd>
         <dt>tabOpen</dt>
         <dd>tab open setting, default is true. when tabOpen is false, then toggle tab open behavior. (boolean, optional)</dd>
+        <dt>urlWithoutKeyword<dt>
+        <dd>url without keyword(/%KEYWORD%/) to open web searvice without keyword. (String, optional)<dd>
       </dl>
     </description>
   </item>
@@ -47,39 +53,61 @@ EOM
 // ref: http://vimperator.g.hatena.ne.jp/teramako/20110303/1299154988
 // ref: copy.js
 
-liberator.plugins.webSearch = (function(){
+liberator.plugins.webSearch = (function() {
   if (typeof liberator.globalVariables.webSearchTemplates == 'undefined') {
     liberator.globalVariables.webSearchTemplates = [];
   }
 
   var templates = [
-    { names: ['alc'], description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/', tabOpen: true }
+    { names: 'alc', description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/', tabOpen: true, urlWithoutKeyword: 'http://www.alc.co.jp' }
   ];
 
   templates = templates.concat(
-    liberator.globalVariables.webSearchTemplates.map(function(t){
-      return { names: t.names, description: t.description, url: t.url, tabOpen: t.tabOpen }
+    liberator.globalVariables.webSearchTemplates.map(function(t) {
+      return { names: t.names, description: t.description, url: t.url, tabOpen: t.tabOpen, urlWithoutKeyword: t.urlWithoutKeyword }
     })
   );
 
-  templates.forEach(function(template){
+  templates.forEach(function(template) {
+    if (typeof template.urlWithoutKeyword == 'undefined') {
+      if (template.url.match(/^((http|https):\/\/[a-z0-9.:@-]+\/)/i)) {
+        template.urlWithoutKeyword = RegExp.$1;
+      }
+    }
+
     commands.addUserCommand(
-      template.names,
+      ((typeof template.names == 'string') ? [template.names] : template.names),
       template.description,
-      function(arg){
-        open(template.url, arg, tabOpenStatus(arg.bang, template.tabOpen));
+      function(arg) {
+        if (arg == '') {
+          openWithoutKeyword(template.urlWithoutKeyword, tabOpenStatus(arg.bang, template.tabOpen));
+        }
+        else {
+          openWithKeyword(template.url, arg, tabOpenStatus(arg.bang, template.tabOpen));
+        }
       },
       {
-        argCount : '+',
+        argCount : ((typeof template.urlWithoutKeyword == 'undefined') ? '+' : '*'),
         bang     : true
       },
       true
     );
+
+    if (typeof template.urlWithoutKeyword != 'undefined') {
+      liberator.modules.quickmarks.add(template.names[0][0], template.urlWithoutKeyword);
+    }
   });
 
-  var open = function(templateUrl, keyword, tabOpen){
+  var openWithKeyword = function(url, keyword, tabOpen) {
     liberator.open(
-      templateUrl.replace(/%KEYWORD%/, keyword.join('+')),
+      url.replace(/%KEYWORD%/, keyword.join('+')),
+      ((tabOpen) ? liberator.NEW_TAB : liberator.CURRENT_TAB)
+    );
+  }
+
+  var openWithoutKeyword = function(url, tabOpen) {
+    liberator.open(
+      url,
       ((tabOpen) ? liberator.NEW_TAB : liberator.CURRENT_TAB)
     );
   }
@@ -93,3 +121,4 @@ liberator.plugins.webSearch = (function(){
     }
   }
 })();
+
