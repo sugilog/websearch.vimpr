@@ -40,31 +40,31 @@ Custom template will be merged template of websearch.js default template.
 
 webSearchTemplates attribues.
 
-[key] names
+=== names
 [type] String Array OR String
 [requirement] require
 [note] Command name
 [example] ['alc']
 
-[key] description
+=== description
 [type] String
 [requirement] optional
 [note] command description
 [example] 'search alc'
 
-[key] url
+=== url
 [type] String
 [requirement] require
 [note] url for search with keyword. the part of keyword need to replace %KEYWORD%
 [example] 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/'
 
-[key] tabOpen
+=== tabOpen
 [type] boolean
 [requirement] optional
 [note] tabOpen status (default true). if tabOpen is set false, command without bang (!) will be opend in current tab
 [example] true
 
-[key] urlWithoutKeyword
+=== urlWithoutKeyword
 [type] String
 [requirement] optional
 [note] url for open web searvice without keyword (like a bookmark). it is also registerd into quickmarks
