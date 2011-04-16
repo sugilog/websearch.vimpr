@@ -1,0 +1,56 @@
+= websearch.js
+
+Websearch.js is a vimperator plugin for user customisable web search commands.
+
+== Requires
+
+* Firefox
+* Vimperator (Firefox addons)
+
+== Usage
+
+You can use :[custom_name] [keyword] to search on web searvice, like below.
+  :alc fire
+
+It will be opened ALC in new tab, and search with keyword 'fire'.
+If you add bang (!), it will be opened in current tab.
+
+You also can use its command without keywod
+  :alc
+
+It will be openen ALC home page.
+(It is also registered into quickmarks with its command names initial.)
+
+All websearch.js command is managed in webSearchTemplates object.
+alc template is berow.
+  liberator.globalVariables.webSearchTemplates = [
+    { names: ['alc'], description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/', tabOpen: true, urlWithoutKeyword: 'http://www.alc.co.jp' }
+  ];
+
+
+== custom template
+
+You can add custom command on .vimperatorrc, like below.
+  javascript <<EOM
+  liberator.globalVariables.webSearchTemplates = [
+    { names: ['gems'], description: 'search rubygems.org', url: 'http://rubygems.org/search?utf8=%E2%9C%93&query=%KEYWORD%' }
+  ];
+  EOM
+Custom template will be merged template of websearch.js default template.
+
+webSearchTemplates attribues.
+key :: type :: requirement :: note :: example
+names :: String Array OR String :: require :: Command name :: ['alc']
+description :: String :: optional :: command description :: 'search alc'
+url :: String :: require :: url for search with keyword. the part of keyword need to replace %KEYWORD% :: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/'
+tabOpen :: boolean :: optional :: tabOpen status (default true). if tabOpen is set false, command without bang (!) will be opend in current tab :: true
+urlWithoutKeyword :: String :: optional :: url for open web searvice without keyword (like a bookmark). it is also registerd into quickmarks :: 'http://www.alc.co.jp'
+
+if urlWithoutKeyword is not set, it will be generated with host of url.
+  'http://rubygems.org/search?utf8=%E2%9C%93&query=%KEYWORD%' => 'http://rubygems.org/'
+
+urlWithoutKeyword is registerd into quickmarks with its command names initial.
+(If names are set multiple command name, websearch.js use first command name.)
+  'alc' => 'qmark a http://www.alc.co.jp/'
+
+
