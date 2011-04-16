@@ -6,7 +6,7 @@ var INFO =
   summary="vimperator plugin for user customisable web search commands"
   xmlns="http://vimperator.org/namespaces/liberator"
 >
-  <author email="sugilog@gmail.com">teramako</author>
+  <author email="sugilog@gmail.com">sugilog</author>
   <license>MPL 1.1/GPL 2.0/LGPL 2.1</license>
   <project name="Vimperator" minVersion="2.3"/>
   <item>
@@ -17,36 +17,6 @@ var INFO =
     <p>command without bang will be searched with new tab as default</p>
     <p>command with bang will be searched with current tab as default</p>
   </description>
-  </item>
-  <item>
-    <tags>webSearchTemplates</tags>
-    <spec>webSearchTemplates</spec>
-    <description>
-      <p>user customisable template (it will concat with template in plugin file and)</p>
-      <code><![CDATA[
-javascript <<EOM
-liberator.globalVariables.webSearchTemplates = [
-  { names: ['alc'], description: 'search alc', url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/', tabOpen: true, urlWithoutKeyword: 'http://www.alc.co.jp' }
-];
-EOM
-      ]]></code>
-      <p>urlWithoutKeyword is set quickmarks with initial of name which is names of first element.</p>
-      <p>ex) {names: ['alc', 'webalc'], urlWithoutKeyword: 'http://www.alc.co.jp'} => 'qmark a http://www.alc.co.jp'</p>
-      <p>if urlWithoutKeyword is not given, urlWithoutKeyword is generated with host of url</p>
-      <p>ex) {names: ['alc', 'webalc'], url: 'http://eow.alc.co.jp/%KEYWORD%/UTF-8/'} => {urlWithoutKeyword: 'http://eow.alc.co.jp/'}</p>
-      <dl>
-        <dt>names</dt>
-        <dd>command names. (String Array OR String, required)</dd>
-        <dt>description</dt>
-        <dd>command description. (String, optional)</dd>
-        <dt>url</dt>
-        <dd>url for search on web searvice. must have %KEYWORD% to replace keyword. (String, required)</dd>
-        <dt>tabOpen</dt>
-        <dd>tab open setting, default is true. when tabOpen is false, then toggle tab open behavior. (boolean, optional)</dd>
-        <dt>urlWithoutKeyword<dt>
-        <dd>url without keyword(/%KEYWORD%/) to open web searvice without keyword. (String, optional)<dd>
-      </dl>
-    </description>
   </item>
 </plugin>
 
