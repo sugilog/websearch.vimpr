@@ -1,7 +1,7 @@
 var INFO =
 <plugin
   name="webSearch"
-  version="0.2.0"
+  version="0.2.1"
   href="http://github.com/sugilog"
   summary="vimperator plugin for user customisable web search commands"
   xmlns="http://vimperator.org/namespaces/liberator"
@@ -39,6 +39,10 @@ liberator.plugins.webSearch = (function() {
   );
 
   templates.forEach(function(template) {
+    if (typeof template.names == 'string') {
+      template.names = [template.names];
+    }
+
     if (typeof template.urlWithoutKeyword == 'undefined') {
       if (template.url.match(/^((http|https):\/\/[a-z0-9.:@-]+\/)/i)) {
         template.urlWithoutKeyword = RegExp.$1;
@@ -46,7 +50,7 @@ liberator.plugins.webSearch = (function() {
     }
 
     commands.addUserCommand(
-      ((typeof template.names == 'string') ? [template.names] : template.names),
+      template.names,
       template.description,
       function(arg) {
         if (arg == '') {
