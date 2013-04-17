@@ -1,5 +1,5 @@
 var INFO =
-<plugin
+xml`<plugin
   name="webSearch"
   version="0.2.1"
   href="http://github.com/sugilog"
@@ -18,7 +18,7 @@ var INFO =
     <p>command with bang will be searched with current tab as default</p>
   </description>
   </item>
-</plugin>
+</plugin>`
 
 // ref: http://vimperator.g.hatena.ne.jp/teramako/20110303/1299154988
 // ref: copy.js
